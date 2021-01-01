@@ -4,5 +4,5 @@ out vec3 ourColor;
 
 void main(){
     gl_Position = vec4(aPos, 1.0);
-    ourColor = vec3(aPos);  // 顶点颜色等于顶点位置
+    ourColor = vec3(aPos);  // 顶点颜色等于顶点位置, 当左下角点x y坐标 <= 0时, 颜色为黑色
 }
