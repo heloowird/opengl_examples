@@ -25,7 +25,6 @@ endforeach(LIBRARY)
 
 # 从系统查找依赖库
 find_package(OpenGL REQUIRED) # xcode
-find_package(GLEW REQUIRED) # brew install glew
 
 # 从src编译依赖库
 add_library(GLAD ${OPENGL_EXAMPLE_SOURCE_DIR}/glad.c)
@@ -46,5 +45,5 @@ foreach(src_cpp ${SRC_CPP_LIST})
     # 生成可执行文件
     add_executable(${full_exe_name} ${src_cpp})
     # 链接相关依赖库
-    target_link_libraries(${full_exe_name} OpenGL::GL GLEW::GLEW ${OPENGL_EXAMPLE_LIBRARIES} GLAD)
+    target_link_libraries(${full_exe_name} OpenGL::GL ${OPENGL_EXAMPLE_LIBRARIES} GLAD)
 endforeach()
