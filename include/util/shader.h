@@ -41,8 +41,9 @@ public:
         const char* vShaderCode = vertexCode.c_str();
         const char* fShaderCode = fragmentCode.c_str();
 
-        std::cout << vShaderCode << std::endl;
-        std::cout << fShaderCode << std::endl;
+        // todo: check code string
+        //std::cout << vShaderCode << std::endl;
+        //std::cout << fShaderCode << std::endl;
 
         // 编译着色器
         unsigned int vertex, fragment;
