@@ -54,8 +54,8 @@ int main(int argc, char* argv[]) {
 
     // 初始化: 包括渲染程序和渲染数据
     Shader shaderProgram = Shader(
-            "../../src/1_getting_started/3_4_shader_class.vs",
-            "../../src/1_getting_started/3_4_shader_class.fs");
+            "../../src/1_getting_started/shaders/3_4_shader_class.vs",
+            "../../src/1_getting_started/shaders/3_4_shader_class.fs");
 
     // 定义三角形的三个顶点和颜色属性
     float vertices[] = {

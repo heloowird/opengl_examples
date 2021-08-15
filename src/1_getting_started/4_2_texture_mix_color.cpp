@@ -57,8 +57,8 @@ int main(int argc, char* argv[]) {
 
     // 初始化: 包括渲染程序和渲染数据
     Shader shaderProgram = Shader(
-            "../../src/1_getting_started/4_2_texture_mix_color.vs",
-            "../../src/1_getting_started/4_2_texture_mix_color.fs");
+            "../../src/1_getting_started/shaders/4_2_texture_mix_color.vs",
+            "../../src/1_getting_started/shaders/4_2_texture_mix_color.fs");
 
     // 定义矩形的四个顶点和颜色属性、纹理坐标
     float vertices[] = {
