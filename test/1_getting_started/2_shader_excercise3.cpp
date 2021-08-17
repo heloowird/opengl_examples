@@ -56,8 +56,8 @@ int main(int argc, char* argv[]) {
 
     // 初始化: 包括渲染程序和渲染数据
     Shader shaderProgram = Shader(
-            "../../test/1_getting_started/2_shader_excercise3.vs",
-            "../../test/1_getting_started/2_shader_excercise3.fs");
+            "../../test/1_getting_started/shaders/2_shader_excercise3.vs",
+            "../../test/1_getting_started/shaders/2_shader_excercise3.fs");
 
     // 定义三角形的三个顶点
     float vertices[] = {
