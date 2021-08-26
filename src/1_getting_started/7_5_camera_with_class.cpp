@@ -15,10 +15,6 @@
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-glm::vec3 camera_pos   = glm::vec3(0.0f, 0.0f,  3.0f);
-glm::vec3 camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 camera_up    = glm::vec3(0.0f, 1.0f,  0.0f);
-
 float delta_time = 0.0f; // 当前帧与上一帧的时间差
 float last_frame = 0.0f; // 上一帧的时间
 
