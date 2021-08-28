@@ -5,7 +5,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <util/shader.h>
 #include <util/texture.h>
@@ -13,14 +12,14 @@
 
 
 // 处理所有的输入：查询当前帧与GLFW相关联的按键是否有按下或释放, 并作出相应动作
-void process_input(GLFWwindow *window)
+void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
 // 当窗口大小改变时, 将执行该回调函数
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
@@ -49,7 +48,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     // GLAD加载所有OpenGL函数指针
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -109,7 +108,7 @@ int main(int argc, char* argv[]) {
     };
 
     // 多个CUBE
-    glm::vec3 cube_positions[] = {
+    glm::vec3 cubePositions[] = {
             glm::vec3( 0.0f,  0.0f,  0.0f),
             glm::vec3( 2.0f,  5.0f, -15.0f),
             glm::vec3(-1.5f, -2.2f, -2.5f),
@@ -172,7 +171,7 @@ int main(int argc, char* argv[]) {
     while (!glfwWindowShouldClose(window))
     {
         // 处理输入
-        process_input(window);
+        processInput(window);
 
         // 渲染图形
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -203,7 +202,7 @@ int main(int argc, char* argv[]) {
         glBindVertexArray(VAO);
         for(unsigned int i = 0; i < 10; i++) {
             glm::mat4 model(1.0f);
-            model = glm::translate(model, cube_positions[i]);
+            model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * (i + 1);
             //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));

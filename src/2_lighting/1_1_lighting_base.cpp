@@ -1,56 +1,53 @@
 #include <iostream>
-#include <math.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <util/shader.h>
-#include <util/texture.h>
 #include <util/camera.h>
 
 // 设置屏幕初始长和宽
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-float delta_time = 0.0f; // 当前帧与上一帧的时间差
-float last_frame = 0.0f; // 上一帧的时间
+float deltaTime = 0.0f; // 当前帧与上一帧的时间差
+float lastFrame = 0.0f; // 上一帧的时间
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
-bool first_mouse = true;
+bool firstMouse = true;
 
 // 处理所有的输入：查询当前帧与GLFW相关联的按键是否有按下或释放, 并作出相应动作
-void process_input(GLFWwindow *window) {
+void processInput(GLFWwindow *window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, delta_time);
+        camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, delta_time);
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, delta_time);
+        camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, delta_time);
+        camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
 // 当窗口大小改变时, 将执行该回调函数
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    if(first_mouse) {
+void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
+    if(firstMouse) {
         lastX = xpos;
         lastY = ypos;
-        first_mouse = false;
+        firstMouse = false;
     }
 
     float xoffset = xpos - lastX;
@@ -61,7 +58,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     camera.ProcessMouseScroll(yoffset);
 }
 
@@ -83,10 +80,10 @@ int main(int argc, char* argv[]) {
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetScrollCallback(window, scrollCallback);
 
     // GLAD加载所有OpenGL函数指针
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -185,12 +182,12 @@ int main(int argc, char* argv[]) {
     // 渲染loop
     while (!glfwWindowShouldClose(window))
     {
-        float current_frame = glfwGetTime();
-        delta_time = current_frame - last_frame;
-        last_frame = current_frame;
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
         // 处理输入
-        process_input(window);
+        processInput(window);
 
         // 渲染图形
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);

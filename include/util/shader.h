@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 class Shader
 {

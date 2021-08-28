@@ -5,14 +5,14 @@
 
 
 // 处理所有的输入：查询当前帧与GLFW相关联的按键是否有按下或释放, 并作出相应动作
-void process_input(GLFWwindow *window)
+void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
 // 当窗口大小改变时, 将执行该回调函数
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     // GLAD加载所有OpenGL函数指针
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     while (!glfwWindowShouldClose(window))
     {
         // 处理输入
-        process_input(window);
+        processInput(window);
 
         // 渲染图形
         // 使用指定颜色清理屏幕
