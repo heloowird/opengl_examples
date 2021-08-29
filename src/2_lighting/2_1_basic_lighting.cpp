@@ -98,8 +98,8 @@ int main(int argc, char* argv[]) {
             "../../src/2_lighting/shaders/1_1_lighting_base.vs",
             "../../src/2_lighting/shaders/1_1_lighting_constant.fs");
     Shader cubeShader(
-            "../../src/2_lighting/shaders/1_2_basic_lighting.vs",
-            "../../src/2_lighting/shaders/1_2_basic_lighting.fs");
+            "../../src/2_lighting/shaders/2_1_basic_lighting.vs",
+            "../../src/2_lighting/shaders/2_1_basic_lighting.fs");
 
     // 定义立方体的顶点
     float vertices[] = {
