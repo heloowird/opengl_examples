@@ -13,7 +13,7 @@ public:
     // 纹理ID
     unsigned int ID;
 
-    Texture(const char* img_path, GLint img_color_mode) {
+    Texture(const char* img_path, GLint img_color_mode = -1) {
         // 创建纹理
         glGenTextures(1, &ID);
         glBindTexture(GL_TEXTURE_2D, ID);
@@ -27,10 +27,20 @@ public:
         stbi_set_flip_vertically_on_load(true);
         unsigned char *data = stbi_load(img_path, &width, &height, &nrChannels, 0);
         if (data) {
-            glTexImage2D(GL_TEXTURE_2D, 0, img_color_mode, width, height, 0, img_color_mode, GL_UNSIGNED_BYTE, data);
+            GLenum format;
+            if (img_color_mode != -1)
+                format = img_color_mode;
+            else if (nrChannels == 1)
+                format = GL_RED;
+            else if (nrChannels == 3)
+                format = GL_RGB;
+            else if (nrChannels == 4)
+                format = GL_RGBA;
+
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         } else {
-            std::cout << "Failed to load texture" << std::endl;
+            std::cout << "Failed to load texture: " << img_path << std::endl;
         }
         stbi_image_free(data);
     }
