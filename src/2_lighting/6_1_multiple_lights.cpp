@@ -247,16 +247,16 @@ int main(int argc, char* argv[]) {
         cubeShader.setVec3("viewPos", camera.Position);
 
         cubeShader.setVec3("dirLight.direction", camera.Front);
-        cubeShader.setVec3("dirLight.ambient",  0.1f, 0.1f, 0.1f);
-        cubeShader.setVec3("dirLight.diffuse",  0.8f, 0.8f, 0.8f); // 将光照调暗了一些以搭配场景
-        cubeShader.setVec3("dirLight.specular", 1.0f, 1.0f, 1.0f);
+        cubeShader.setVec3("dirLight.ambient",  0.05f, 0.05f, 0.05f);
+        cubeShader.setVec3("dirLight.diffuse",  0.4f, 0.4f, 0.4f); // 将光照调暗了一些以搭配场景
+        cubeShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
         for (int i = 0; i < 4; i++) {
             cubeShader.setVec3("pointLights[" + std::to_string(i) + "].position", pointLightPositions[i]);
             cubeShader.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0f);
             cubeShader.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09f);
             cubeShader.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.032f);
-            cubeShader.setVec3("pointLights[" + std::to_string(i) + "].ambient", 0.1f, 0.1f, 0.1f);
+            cubeShader.setVec3("pointLights[" + std::to_string(i) + "].ambient", 0.05f, 0.05f, 0.05f);
             cubeShader.setVec3("pointLights[" + std::to_string(i) + "].diffuse", 0.8f, 0.8f, 0.8f);
             cubeShader.setVec3("pointLights[" + std::to_string(i) + "].specular", 1.0f, 1.0f, 1.0f);
         }
