@@ -2,3 +2,6 @@
 	path = libs/glfw
 	url = https://github.com/glfw/glfw.git
     ignore = dirty
+[submodule "libs/assimp"]
+	path = libs/assimp
+	url = https://github.com/assimp/assimp.git
