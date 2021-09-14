@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ -d build ]
+if [ ! -d build ]
 then
-    rm -rf build
+    mkdir build
 fi
 
-mkdir -p build && cd build && cmake .. && make
+cd build && cmake .. && make
 

@@ -7,20 +7,17 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <util/shader.h>
-#include <util/texture.h>
-
+#include <util/model.h>
 
 
 // 处理所有的输入：查询当前帧与GLFW相关联的按键是否有按下或释放, 并作出相应动作
-void processInput(GLFWwindow *window)
-{
+void processInput(GLFWwindow *window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
 // 当窗口大小改变时, 将执行该回调函数
-void framebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
@@ -41,8 +38,7 @@ int main(int argc, char* argv[]) {
 #endif
 
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -51,8 +47,7 @@ int main(int argc, char* argv[]) {
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     // GLAD加载所有OpenGL函数指针
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -110,8 +105,8 @@ int main(int argc, char* argv[]) {
     // 解绑VAO
     glBindVertexArray(0);
 
-    Texture texture1 = Texture("../../resources/textures/container.jpg", GL_RGB);
-    Texture texture2 = Texture("../../resources/textures/awesomeface.png", GL_RGBA);
+    unsigned int texture1 = TextureFromFile("container.jpg", "../../resources/textures/");
+    unsigned int texture2 = TextureFromFile("awesomeface.png", "../../resources/textures/");
 
     shaderProgram.use();
     shaderProgram.setInt("texture1", 0);
@@ -124,8 +119,7 @@ int main(int argc, char* argv[]) {
 //    vec = trans * vec;
 
     // 渲染loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         // 处理输入
         processInput(window);
 
@@ -135,9 +129,9 @@ int main(int argc, char* argv[]) {
 
         // 绑定多个纹理
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1.ID);
+        glBindTexture(GL_TEXTURE_2D, texture1);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2.ID);
+        glBindTexture(GL_TEXTURE_2D, texture2);
 
         // 激活着色器
         shaderProgram.use();
@@ -169,8 +163,6 @@ int main(int argc, char* argv[]) {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    texture1.del();
-    texture2.del();
     shaderProgram.del();
 
     // 终止GLFW, 清理所有GLFW分配的资源

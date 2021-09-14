@@ -9,8 +9,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-class Shader
-{
+class Shader {
 public:
     // 着色器程序ID
     unsigned int ID;
@@ -118,8 +117,7 @@ private:
         int success;
         char infoLog[512];
         glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-        if(!success)
-        {
+        if(!success) {
             glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
             std::cout << "ERROR::SHADER::" << shaderType << "::COMPILATION_FAILED\n" << infoLog << std::endl;
         }

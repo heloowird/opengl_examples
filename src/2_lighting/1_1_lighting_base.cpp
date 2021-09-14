@@ -73,8 +73,7 @@ int main(int argc, char* argv[]) {
 #endif
 
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -86,8 +85,7 @@ int main(int argc, char* argv[]) {
     glfwSetScrollCallback(window, scrollCallback);
 
     // GLAD加载所有OpenGL函数指针
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -180,8 +178,7 @@ int main(int argc, char* argv[]) {
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
     // 渲染loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;

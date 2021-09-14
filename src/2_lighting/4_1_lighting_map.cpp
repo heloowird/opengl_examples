@@ -7,7 +7,7 @@
 
 #include <util/shader.h>
 #include <util/camera.h>
-#include <util/texture.h>
+#include <util/model.h>
 
 // 设置屏幕初始长和宽
 const unsigned int SCR_WIDTH = 800;
@@ -74,8 +74,7 @@ int main(int argc, char* argv[]) {
 #endif
 
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -87,8 +86,7 @@ int main(int argc, char* argv[]) {
     glfwSetScrollCallback(window, scrollCallback);
 
     // GLAD加载所有OpenGL函数指针
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -102,7 +100,7 @@ int main(int argc, char* argv[]) {
             "../../src/2_lighting/shaders/4_1_lighting_map.vs",
             "../../src/2_lighting/shaders/4_1_lighting_map.fs");
 
-    Texture texture1("../../resources/textures/container2.png", GL_RGBA);
+    unsigned int texture1 = TextureFromFile("container2.png", "../../resources/textures/");
 
     // 定义立方体的顶点
     float vertices[] = {
@@ -195,8 +193,7 @@ int main(int argc, char* argv[]) {
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
     // 渲染loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -209,7 +206,7 @@ int main(int argc, char* argv[]) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1.ID);
+        glBindTexture(GL_TEXTURE_2D, texture1);
 
         // 激活着色器
         cubeShader.use();
