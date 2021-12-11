@@ -94,8 +94,8 @@ int main(int argc, char* argv[]) {
     stbi_set_flip_vertically_on_load(true);
     glEnable(GL_DEPTH_TEST);
 
-    Shader ourShader("../../src/3_model_loading/shaders/1_1_loading_model.vs",
-            "../../src/3_model_loading/shaders/1_1_loading_model.fs");
+    Shader ourShader("../../examples/3_model_loading/shaders/1_1_loading_model.vs",
+            "../../examples/3_model_loading/shaders/1_1_loading_model.fs");
     Model ourModel("../../resources/objects/nanosuit/nanosuit.obj");
 
     // 渲染loop

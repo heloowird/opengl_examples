@@ -1,12 +1,13 @@
 #include <iostream>
-#include <math.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <util/shader.h>
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
+#include <util/model.h>
 
 
 // 处理所有的输入：查询当前帧与GLFW相关联的按键是否有按下或释放, 并作出相应动作
@@ -53,8 +54,8 @@ int main(int argc, char* argv[]) {
 
     // 初始化: 包括渲染程序和渲染数据
     Shader shaderProgram = Shader(
-            "../../src/1_getting_started/shaders/4_1_texture_base.vs",
-            "../../src/1_getting_started/shaders/4_1_texture_base.fs");
+            "../../examples/1_getting_started/shaders/5_1_transformation.vs",
+            "../../examples/1_getting_started/shaders/5_1_transformation.fs");
 
     // 定义矩形的四个顶点和颜色属性、纹理坐标
     float vertices[] = {
@@ -104,25 +105,18 @@ int main(int argc, char* argv[]) {
     // 解绑VAO
     glBindVertexArray(0);
 
-    // 创建纹理
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    // 为当前绑定的纹理对象设置环绕、过滤方式
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // 加载并生成纹理
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("../../resources/textures/container.jpg", &width, &height, &nrChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
+    unsigned int texture1 = TextureFromFile("container.jpg", "../../resources/textures/");
+    unsigned int texture2 = TextureFromFile("awesomeface.png", "../../resources/textures/");
+
+    shaderProgram.use();
+    shaderProgram.setInt("texture1", 0);
+    shaderProgram.setInt("texture2", 1);
+
+//    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+//    glm::mat4 trans = glm::mat4(1.0f);
+//    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+//    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+//    vec = trans * vec;
 
     // 渲染loop
     while (!glfwWindowShouldClose(window)) {
@@ -133,11 +127,22 @@ int main(int argc, char* argv[]) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // 绑定纹理
-        glBindTexture(GL_TEXTURE_2D, texture);
+        // 绑定多个纹理
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
 
         // 激活着色器
         shaderProgram.use();
+
+        glm::mat4 trans = glm::mat4(1.0f);;
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        unsigned int transformLoc = glGetUniformLocation(shaderProgram.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -150,7 +155,6 @@ int main(int argc, char* argv[]) {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    glDeleteTextures(1, &texture);
     shaderProgram.del();
 
     // 终止GLFW, 清理所有GLFW分配的资源

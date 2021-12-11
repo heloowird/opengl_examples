@@ -6,3 +6,7 @@
 	path = libs/assimp
 	url = https://github.com/assimp/assimp.git
 	ignore = dirty
+[submodule "libs/soil"]
+	path = libs/soil
+	url = https://github.com/burtonageo/SOIL.git
+	ignore = dirty

@@ -94,11 +94,11 @@ int main(int argc, char* argv[]) {
 
     // 初始化: 包括渲染程序和渲染数据
     Shader lightShader(
-            "../../src/2_lighting/shaders/1_1_lighting_base.vs",
-            "../../src/2_lighting/shaders/1_1_lighting_constant.fs");
+            "../../examples/2_lighting/shaders/1_1_lighting_base.vs",
+            "../../examples/2_lighting/shaders/1_1_lighting_constant.fs");
     Shader cubeShader(
-            "../../src/2_lighting/shaders/5_1_light_caster_direct.vs",
-            "../../src/2_lighting/shaders/5_1_light_caster_direct.fs");
+            "../../examples/2_lighting/shaders/5_3_light_caster_flashlight.vs",
+            "../../examples/2_lighting/shaders/5_3_light_caster_flashlight.fs");
 
     unsigned int texture1 = TextureFromFile("container2.png", "../../resources/textures/");
     unsigned int texture2 = TextureFromFile("container2_specular.png", "../../resources/textures/");
@@ -205,7 +205,7 @@ int main(int argc, char* argv[]) {
     cubeShader.setInt("material.diffuse", 0);
     cubeShader.setInt("material.specular", 1);
 
-//    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
     // 渲染loop
     while (!glfwWindowShouldClose(window)) {
@@ -227,8 +227,6 @@ int main(int argc, char* argv[]) {
 
         // 激活着色器
         cubeShader.use();
-        //cubeShader.setVec3("light.position", lightPos);
-        cubeShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
         cubeShader.setVec3("viewPos", camera.Position);
 
         glm::mat4 view = camera.GetViewMatrix();
@@ -237,13 +235,20 @@ int main(int argc, char* argv[]) {
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
         cubeShader.setFloat("material.shininess", 64.0f);
+
+        cubeShader.setVec3("light.position",  camera.Position);
+        cubeShader.setVec3("light.direction", camera.Front);
+        cubeShader.setFloat("light.cutOff",   glm::cos(glm::radians(12.5f)));
         cubeShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
         cubeShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f); // 将光照调暗了一些以搭配场景
         cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        cubeShader.setFloat("light.constant",  1.0f);
+        cubeShader.setFloat("light.linear",    0.09f);
+        cubeShader.setFloat("light.quadratic", 0.032f);
 
         glBindVertexArray(cubeVAO);
         for(unsigned int i = 0; i < 10; i++) {
-            glm::mat4 model = glm::mat4(1.0f);
+            glm::mat4 model(1.0f);
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
@@ -252,7 +257,7 @@ int main(int argc, char* argv[]) {
         }
 
 //        lightShader.use();
-//        model = glm::mat4(1.0f);
+//        glm::mat4 model(1.0f);
 //        model = glm::translate(model, lightPos);
 //        model = glm::scale(model, glm::vec3(0.2f));
 //        lightShader.setMat4("model", model);

@@ -94,14 +94,14 @@ int main(int argc, char* argv[]) {
 
     // 初始化: 包括渲染程序和渲染数据
     Shader lightShader(
-            "../../src/2_lighting/shaders/1_1_lighting_base.vs",
-            "../../src/2_lighting/shaders/1_1_lighting_constant.fs");
+            "../../examples/2_lighting/shaders/1_1_lighting_base.vs",
+            "../../examples/2_lighting/shaders/1_1_lighting_constant.fs");
     Shader cubeShader(
-            "../../src/2_lighting/shaders/4_2_lighting_map_v2.vs",
-            "../../src/2_lighting/shaders/4_2_lighting_map_v2.fs");
+            "../../examples/2_lighting/shaders/5_4_light_caster_spotlight_soft.vs",
+            "../../examples/2_lighting/shaders/5_4_light_caster_spotlight_soft.fs");
 
     unsigned int texture1 = TextureFromFile("container2.png", "../../resources/textures");
-    unsigned int texture2 = TextureFromFile("container2_specular.png", "../../resources/textures");
+    unsigned int texture2 = TextureFromFile("container2_specular.png", "../../resources/textures/");
 
     // 定义立方体的顶点
     float vertices[] = {
@@ -147,6 +147,19 @@ int main(int argc, char* argv[]) {
             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
             -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
             -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
+    };
+
+    glm::vec3 cubePositions[] = {
+            glm::vec3( 0.0f,  0.0f,  0.0f),
+            glm::vec3( 2.0f,  5.0f, -15.0f),
+            glm::vec3(-1.5f, -2.2f, -2.5f),
+            glm::vec3(-3.8f, -2.0f, -12.3f),
+            glm::vec3( 2.4f, -0.4f, -3.5f),
+            glm::vec3(-1.7f,  3.0f, -7.5f),
+            glm::vec3( 1.3f, -2.0f, -2.5f),
+            glm::vec3( 1.5f,  2.0f, -2.5f),
+            glm::vec3( 1.5f,  0.2f, -1.5f),
+            glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
     // 声明一个VAO和VBO, EBO缓冲ID
@@ -214,34 +227,45 @@ int main(int argc, char* argv[]) {
 
         // 激活着色器
         cubeShader.use();
-        cubeShader.setVec3("light.position", lightPos);
-        cubeShader.setVec3("viewPos", camera.Position);
 
-        glm::mat4 model(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection(1.0f);
         projection = glm::perspective(glm::radians(camera.Zoom), 1.0f * SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
-        cubeShader.setMat4("model", model);
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
-        cubeShader.setFloat("material.shininess", 64.0f);
-        cubeShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
-        cubeShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f); // 将光照调暗了一些以搭配场景
+        cubeShader.setFloat("material.shininess", 32.0f);
+        cubeShader.setVec3("viewPos", camera.Position);
+        cubeShader.setVec3("light.position",  camera.Position);
+        cubeShader.setVec3("light.direction", camera.Front);
+        cubeShader.setFloat("light.cutOff",   glm::cos(glm::radians(12.5f)));
+        cubeShader.setFloat("light.outerCutOff",   glm::cos(glm::radians(17.5f)));
+        cubeShader.setVec3("light.ambient",  0.1f, 0.1f, 0.1f);
+        cubeShader.setVec3("light.diffuse",  0.8f, 0.8f, 0.8f); // 将光照调暗了一些以搭配场景
         cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        cubeShader.setFloat("light.constant",  1.0f);
+        cubeShader.setFloat("light.linear",    0.09f);
+        cubeShader.setFloat("light.quadratic", 0.032f);
 
         glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for(unsigned int i = 0; i < 10; i++) {
+            glm::mat4 model(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            cubeShader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
-        lightShader.use();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f));
-        lightShader.setMat4("model", model);
-        lightShader.setMat4("view", view);
-        lightShader.setMat4("projection", projection);
-
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+//        lightShader.use();
+//        glm::mat4 model(1.0f);
+//        model = glm::translate(model, lightPos);
+//        model = glm::scale(model, glm::vec3(0.2f));
+//        lightShader.setMat4("model", model);
+//        lightShader.setMat4("view", view);
+//        lightShader.setMat4("projection", projection);
+//
+//        glBindVertexArray(lightVAO);
+//        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // 交换缓冲区、轮询IO事件(键盘按下/释放、鼠标移动等)
         glfwSwapBuffers(window);

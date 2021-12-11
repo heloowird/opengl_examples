@@ -93,11 +93,11 @@ int main(int argc, char* argv[]) {
 
     // 初始化: 包括渲染程序和渲染数据
     Shader lightShader(
-            "../../src/2_lighting/shaders/1_1_lighting_base.vs",
-            "../../src/2_lighting/shaders/1_1_lighting_constant.fs");
+            "../../examples/2_lighting/shaders/1_1_lighting_base.vs",
+            "../../examples/2_lighting/shaders/1_1_lighting_constant.fs");
     Shader cubeShader(
-            "../../src/2_lighting/shaders/2_2_specular_highlight.vs",
-            "../../src/2_lighting/shaders/2_2_specular_highlight.fs");
+            "../../examples/2_lighting/shaders/3_1_materials.vs",
+            "../../examples/2_lighting/shaders/3_1_materials.fs");
 
     // 定义立方体的顶点
     float vertices[] = {
@@ -196,7 +196,6 @@ int main(int argc, char* argv[]) {
 
         // 激活着色器
         cubeShader.use();
-        cubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         cubeShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
         cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", camera.Position);
@@ -208,6 +207,10 @@ int main(int argc, char* argv[]) {
         cubeShader.setMat4("model", model);
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
+        cubeShader.setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
+        cubeShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
+        cubeShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+        cubeShader.setFloat("material.shininess", 32.0f);
 
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);

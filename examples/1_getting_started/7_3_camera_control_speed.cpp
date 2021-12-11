@@ -1,5 +1,4 @@
 #include <iostream>
-#include <math.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -9,11 +8,27 @@
 #include <util/shader.h>
 #include <util/model.h>
 
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
+
+float deltaTime = 0.0f; // 当前帧与上一帧的时间差
+float lastFrame = 0.0f; // 上一帧的时间
 
 // 处理所有的输入：查询当前帧与GLFW相关联的按键是否有按下或释放, 并作出相应动作
 void processInput(GLFWwindow *window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    float camera_speed = 2.5f * deltaTime;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += camera_speed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= camera_speed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * camera_speed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * camera_speed;
 }
 
 // 当窗口大小改变时, 将执行该回调函数
@@ -54,8 +69,8 @@ int main(int argc, char* argv[]) {
 
     // 初始化: 包括渲染程序和渲染数据
     Shader shaderProgram = Shader(
-            "../../src/1_getting_started/shaders/7_1_camera_base.vs",
-            "../../src/1_getting_started/shaders/7_1_camera_base.fs");
+            "../../examples/1_getting_started/shaders/7_1_camera_base.vs",
+            "../../examples/1_getting_started/shaders/7_1_camera_base.fs");
 
     // 定义矩形的四个顶点和颜色属性、纹理坐标
     float vertices[] = {
@@ -164,6 +179,10 @@ int main(int argc, char* argv[]) {
 
     // 渲染loop
     while (!glfwWindowShouldClose(window)) {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         // 处理输入
         processInput(window);
 
@@ -184,9 +203,7 @@ int main(int argc, char* argv[]) {
         // 注意，我们将矩阵向我们要进行移动场景的反方向移动。
         glm::mat4 view(1.0f);
         float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
-        view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glm::mat4 projection(1.0f);
         projection = glm::perspective(glm::radians(45.0f), 1.0f * SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
 
