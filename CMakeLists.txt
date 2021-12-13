@@ -42,7 +42,12 @@ add_library(GLAD ${OPENGL_EXAMPLE_SOURCE_DIR}/glad/glad.c)
 # 指定头文件路径
 include_directories(${OPENGL_EXAMPLE_INCLUDE_DIR})
 
-# 遍历编译可执行文件
+# 编译src
+file(GLOB SOURCES ${OPENGL_EXAMPLE_SOURCE_DIR}/game/*.cpp)
+add_executable(${OPENGL_EXAMPLE_PROJECT_NAME} ${OPENGL_EXAMPLE_SOURCE_DIR}/main.cpp ${SOURCES})
+target_link_libraries(${OPENGL_EXAMPLE_PROJECT_NAME} OpenGL::GL glfw soil GLAD)
+
+# 编译examples和test
 FILE(GLOB SRC_CPP_LIST ${OPENGL_EXAMPLE_EXAMPLES_DIR}/*/*.cpp ${OPENGL_EXAMPLE_EXCERCISE_DIR}/*/*.cpp)
 foreach(src_cpp ${SRC_CPP_LIST})
     # 获取cpp文件前缀
