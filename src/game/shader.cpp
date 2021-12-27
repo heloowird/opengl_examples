@@ -10,10 +10,10 @@
 
 #include <iostream>
 
-Shader &Shader::Use()
+Shader* Shader::Use()
 {
     glUseProgram(this->ID);
-    return *this;
+    return this;
 }
 
 void Shader::Compile(const GLchar* vertexSource, const GLchar* fragmentSource, const GLchar* geometrySource)

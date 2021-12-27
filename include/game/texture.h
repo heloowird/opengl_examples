@@ -9,6 +9,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <memory>
+
 #include <glad/glad.h>
 
 // Texture2D is able to store and configure a texture in OpenGL.

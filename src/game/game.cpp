@@ -10,7 +10,7 @@
 #include "game/game.h"
 #include "game/resource_manager.h"
 
-SpriteRenderer  *Renderer;
+std::shared_ptr<SpriteRenderer>  Renderer;
 
 Game::Game(GLuint width, GLuint height)
         : State(GAME_ACTIVE), Keys(), Width(width), Height(height)
@@ -20,7 +20,7 @@ Game::Game(GLuint width, GLuint height)
 
 Game::~Game()
 {
-    delete Renderer;
+    //delete Renderer;
 }
 
 void Game::Init()
@@ -30,10 +30,10 @@ void Game::Init()
     // 配置着色器
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(this->Width),
                                       static_cast<GLfloat>(this->Height), 0.0f, -1.0f, 1.0f);
-    ResourceManager::GetShader("sprite").Use().SetInteger("image", 0);
-    ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
+    ResourceManager::GetShader("sprite")->Use()->SetInteger("image", 0);
+    ResourceManager::GetShader("sprite")->SetMatrix4("projection", projection);
     // 设置专用于渲染的控制
-    Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
+    Renderer = std::make_shared<SpriteRenderer>(ResourceManager::GetShader("sprite"));
     // 加载纹理
     ResourceManager::LoadTexture("../../resources/textures/awesomeface.png", GL_TRUE, "face");
 }

@@ -10,6 +10,7 @@
 #define SHADER_H
 
 #include <string>
+#include <memory>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -27,7 +28,7 @@ public:
     // Constructor
     Shader() { }
     // Sets the current shader as active
-    Shader  &Use();
+    Shader*  Use();
     // Compiles the shader from given source code
     void    Compile(const GLchar *vertexSource, const GLchar *fragmentSource, const GLchar *geometrySource = nullptr); // Note: geometry source code is optional
     // Utility functions

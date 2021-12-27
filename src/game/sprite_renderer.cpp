@@ -9,8 +9,7 @@
 #include "game/sprite_renderer.h"
 
 
-SpriteRenderer::SpriteRenderer(Shader &shader) : shader(shader) {
-    //this->shader = shader;
+SpriteRenderer::SpriteRenderer(std::shared_ptr<Shader> shader) : shader(shader) {
     this->initRenderData();
 }
 
@@ -19,11 +18,11 @@ SpriteRenderer::~SpriteRenderer()
     glDeleteVertexArrays(1, &this->quadVAO);
 }
 
-void SpriteRenderer::DrawSprite(Texture2D &texture, glm::vec2 position, glm::vec2 size, GLfloat rotate, glm::vec3 color)
+void SpriteRenderer::DrawSprite(std::shared_ptr<Texture2D> texture, glm::vec2 position, glm::vec2 size, GLfloat rotate, glm::vec3 color)
 {
     // Prepare transformations
-    std::cout << "draw sprite, shader: " << &(this->shader) << std::endl;
-    this->shader.Use();
+    //std::cout << "draw sprite, shader: " << this->shader << std::endl;
+    this->shader->Use();
     glm::mat4 model;
     model = glm::translate(model, glm::vec3(position, 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
 
@@ -33,14 +32,14 @@ void SpriteRenderer::DrawSprite(Texture2D &texture, glm::vec2 position, glm::vec
 
     model = glm::scale(model, glm::vec3(size, 1.0f)); // Last scale
 
-    this->shader.SetMatrix4("model", model);
+    this->shader->SetMatrix4("model", model);
 
     // Render textured quad
-    this->shader.SetVector3f("spriteColor", color);
+    this->shader->SetVector3f("spriteColor", color);
 
     glActiveTexture(GL_TEXTURE0);
-    std::cout << "draw sprite, texture: " << &(texture) << std::endl;
-    texture.Bind();
+    //std::cout << "draw sprite, texture: " << texture << std::endl;
+    texture->Bind();
 
     glBindVertexArray(this->quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
