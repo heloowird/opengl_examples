@@ -17,6 +17,8 @@
 
 // GLFW function declerations
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+// 当窗口大小改变时, 将执行该回调函数
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) ;
 
 // The Width of the screen
 const GLuint SCREEN_WIDTH = 800;
@@ -31,7 +33,7 @@ int main(int argc, char *argv[])
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    //glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -44,6 +46,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     //glewExperimental = GL_TRUE;
     //glfwInit();
@@ -58,10 +61,9 @@ int main(int argc, char *argv[])
     }
 
     // OpenGL configuration
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_CULL_FACE);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Initialize game
     Breakout.Init();
@@ -79,7 +81,6 @@ int main(int argc, char *argv[])
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        glfwPollEvents();
 
         //deltaTime = 0.001f;
         // Manage user input
@@ -90,10 +91,12 @@ int main(int argc, char *argv[])
 
         // Render
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         Breakout.Render();
 
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     // Delete all resources as loaded using the resource manager
@@ -117,3 +120,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
+// 当窗口大小改变时, 将执行该回调函数
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    // make sure the viewport matches the new window dimensions; note that width and
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
+}

@@ -4,8 +4,8 @@ set(OPENGL_EXAMPLE_PROJECT_NAME opengl_example)
 project(${OPENGL_EXAMPLE_PROJECT_NAME})
 
 # fix CMake Error: CMAKE_CXX_COMPILER c++ is not a full path and was not found in the PATH.
-#set(CMAKE_CXX_COMPILER /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++)
-set(CMAKE_CXX_COMPILER c++)
+set(CMAKE_CXX_COMPILER /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++)
+#set(CMAKE_CXX_COMPILER c++)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -62,3 +62,8 @@ foreach(src_cpp ${SRC_CPP_LIST})
     # 链接相关依赖库
     target_link_libraries(${full_exe_name} OpenGL::GL ${OPENGL_EXAMPLE_LIBRARIES} GLAD)
 endforeach()
+
+
+add_custom_command(TARGET ${OPENGL_EXAMPLE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${OPENGL_EXAMPLE_PROJECT_NAME}>/resources)
