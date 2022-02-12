@@ -32,10 +32,12 @@ void Game::Init()
                                       static_cast<GLfloat>(this->Height), 0.0f, -1.0f, 1.0f);
     ResourceManager::GetShader("sprite")->Use()->SetInteger("image", 0);
     ResourceManager::GetShader("sprite")->SetMatrix4("projection", projection);
-    // 设置专用于渲染的控制
-    Renderer = std::make_shared<SpriteRenderer>(ResourceManager::GetShader("sprite"));
+
     // 加载纹理
     ResourceManager::LoadTexture("../../resources/textures/awesomeface.png", GL_TRUE, "face");
+
+    // 设置专用于渲染的控制
+    Renderer = std::make_shared<SpriteRenderer>(ResourceManager::GetShader("sprite"));
 }
 
 void Game::Update(GLfloat dt)

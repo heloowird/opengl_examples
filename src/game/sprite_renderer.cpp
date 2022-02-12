@@ -23,7 +23,7 @@ void SpriteRenderer::DrawSprite(std::shared_ptr<Texture2D> texture, glm::vec2 po
     // Prepare transformations
     //std::cout << "draw sprite, shader: " << this->shader << std::endl;
     this->shader->Use();
-    glm::mat4 model;
+    glm::mat4 model(1.0f); //  IMPORTANT!!! 'glm::mat4 model;' will display nothing
     model = glm::translate(model, glm::vec3(position, 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
 
     model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f)); // Move origin of rotation to center of quad

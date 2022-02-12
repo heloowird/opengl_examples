@@ -18,7 +18,7 @@
 // GLFW function declerations
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 // 当窗口大小改变时, 将执行该回调函数
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) ;
+void frame_buffer_size_callback(GLFWwindow* window, int width, int height) ;
 
 // The Width of the screen
 const GLuint SCREEN_WIDTH = 800;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+    glfwSetFramebufferSizeCallback(window, frame_buffer_size_callback);
 
     //glewExperimental = GL_TRUE;
     //glfwInit();
@@ -90,8 +90,8 @@ int main(int argc, char *argv[])
         Breakout.Update(deltaTime);
 
         // Render
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         Breakout.Render();
 
@@ -121,7 +121,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 
 // 当窗口大小改变时, 将执行该回调函数
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+void frame_buffer_size_callback(GLFWwindow* window, int width, int height) {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
