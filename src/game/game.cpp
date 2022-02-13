@@ -12,6 +12,7 @@
 
 std::shared_ptr<SpriteRenderer>  Renderer;
 std::shared_ptr<GameObject> Player;
+std::shared_ptr<BallObject> Ball;
 
 Game::Game(GLuint width, GLuint height)
         : State(GAME_ACTIVE), Keys(), Width(width), Height(height)
@@ -59,11 +60,15 @@ void Game::Init()
             this->Height - PLAYER_SIZE.y
     );
     Player = std::make_shared<GameObject>(playerPos, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
+
+    glm::vec2 ballPos = playerPos + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -BALL_RADIUS * 2);
+    Ball = std::make_shared<BallObject>(ballPos, BALL_RADIUS, INITIAL_BALL_VELOCITY,
+                          ResourceManager::GetTexture("face"));
 }
 
 void Game::Update(GLfloat dt)
 {
-
+    Ball->Move(dt, this->Width);
 }
 
 
@@ -72,17 +77,27 @@ void Game::ProcessInput(GLfloat dt)
     if (this->State == GAME_ACTIVE)
     {
         GLfloat velocity = PLAYER_VELOCITY * dt;
-        // 移动挡板
+        // 移动玩家挡板
         if (this->Keys[GLFW_KEY_A])
         {
             if (Player->Position.x >= 0)
+            {
                 Player->Position.x -= velocity;
+                if (Ball->Stuck)
+                    Ball->Position.x -= velocity;
+            }
         }
         if (this->Keys[GLFW_KEY_D])
         {
             if (Player->Position.x <= this->Width - Player->Size.x)
+            {
                 Player->Position.x += velocity;
+                if (Ball->Stuck)
+                    Ball->Position.x += velocity;
+            }
         }
+        if (this->Keys[GLFW_KEY_SPACE])
+            Ball->Stuck = false;
     }
 }
 
@@ -104,6 +119,38 @@ void Game::Render()
 
         // 绘制档板
         Player->Draw(Renderer);
+
+        // 绘制小球
+        Ball->Draw(Renderer);
+    }
+}
+
+GLboolean CheckCollision(GameObject &one, GameObject &two) // AABB - AABB collision
+{
+    // x轴方向碰撞？
+    bool collisionX = one.Position.x + one.Size.x >= two.Position.x &&
+                      two.Position.x + two.Size.x >= one.Position.x;
+    // y轴方向碰撞？
+    bool collisionY = one.Position.y + one.Size.y >= two.Position.y &&
+                      two.Position.y + two.Size.y >= one.Position.y;
+    // 只有两个轴向都有碰撞时才碰撞
+    return collisionX && collisionY;
+}
+
+
+
+void Game::DoCollisions()
+{
+    for (GameObject &box : this->Levels[this->Level].Bricks)
+    {
+        if (!box.Destroyed)
+        {
+            if (CheckCollision(*Ball, box))
+            {
+                if (!box.IsSolid)
+                    box.Destroyed = GL_TRUE;
+            }
+        }
     }
 }
 

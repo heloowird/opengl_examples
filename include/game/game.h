@@ -6,6 +6,7 @@
 
 #include "game_level.h"
 #include "game_object.h"
+#include "ball_object.h"
 
 // Represents the current state of the game
 enum GameState {
@@ -18,6 +19,10 @@ enum GameState {
 const glm::vec2 PLAYER_SIZE(100, 20);
 // Initial velocity of the player paddle
 const GLfloat PLAYER_VELOCITY(500.0f);
+// 初始化球的速度
+const glm::vec2 INITIAL_BALL_VELOCITY(100.0f, -350.0f);
+// 球的半径
+const GLfloat BALL_RADIUS = 12.5f;
 
 // Game holds all game-related state and functionality.
 // Combines all game-related data into a single class for
@@ -40,6 +45,7 @@ public:
     void ProcessInput(GLfloat dt);
     void Update(GLfloat dt);
     void Render();
+    void DoCollisions();
 };
 
 #endif //GAME_H
