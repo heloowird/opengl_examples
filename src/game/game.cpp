@@ -13,6 +13,8 @@
 std::shared_ptr<SpriteRenderer>  Renderer;
 std::shared_ptr<GameObject> Player;
 std::shared_ptr<BallObject> Ball;
+std::shared_ptr<ParticleGenerator> Particles;
+
 
 Game::Game(GLuint width, GLuint height)
         : State(GAME_ACTIVE), Keys(), Width(width), Height(height)
@@ -29,11 +31,15 @@ void Game::Init()
 {
     // 加载着色器
     ResourceManager::LoadShader("resources/shaders/sprite.vs", "resources/shaders/sprite.fs", nullptr, "sprite");
+    ResourceManager::LoadShader("resources/shaders/particle.vs", "resources/shaders/particle.fs", nullptr, "particle");
+
     // 配置着色器
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(this->Width),
                                       static_cast<GLfloat>(this->Height), 0.0f, -1.0f, 1.0f);
     ResourceManager::GetShader("sprite")->Use()->SetInteger("image", 0);
     ResourceManager::GetShader("sprite")->SetMatrix4("projection", projection);
+    ResourceManager::GetShader("particle")->Use()->SetInteger("sprite", 0);
+    ResourceManager::GetShader("particle")->SetMatrix4("projection", projection);
 
     // 加载纹理
     ResourceManager::LoadTexture("resources/textures/background.jpg", GL_FALSE, "background");
@@ -41,9 +47,14 @@ void Game::Init()
     ResourceManager::LoadTexture("resources/textures/block.png", GL_FALSE, "block");
     ResourceManager::LoadTexture("resources/textures/block_solid.png", GL_FALSE, "block_solid");
     ResourceManager::LoadTexture("resources/textures/paddle.png", GL_TRUE, "paddle");
+    ResourceManager::LoadTexture("resources/textures/particle.png", GL_TRUE, "particle");
 
     // 设置专用于渲染的控制
     Renderer = std::make_shared<SpriteRenderer>(ResourceManager::GetShader("sprite"));
+    Particles = std::make_shared<ParticleGenerator>(ResourceManager::GetShader("particle"),
+            ResourceManager::GetTexture("particle"),
+            500
+    );
 
     GameLevel one; one.Load("resources/levels/one.lvl", this->Width, this->Height * 0.5);
     GameLevel two; two.Load("resources/levels/two.lvl", this->Width, this->Height * 0.5);
@@ -73,6 +84,9 @@ void Game::Update(GLfloat dt)
 
     // 检测碰撞
     this->DoCollisions();
+
+    // 更新粒子
+    Particles->Update(dt, *Ball, 2, glm::vec2(Ball->Radius / 2));
 
     // 检测失败
     if (Ball->Position.y >= this->Height) // Did ball reach bottom edge?
@@ -130,6 +144,9 @@ void Game::Render()
 
         // 绘制档板
         Player->Draw(Renderer);
+
+        // 绘制粒子
+        Particles->Draw();
 
         // 绘制小球
         Ball->Draw(Renderer);
