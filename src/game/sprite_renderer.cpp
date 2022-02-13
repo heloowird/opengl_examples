@@ -43,7 +43,7 @@ void SpriteRenderer::DrawSprite(std::shared_ptr<Texture2D> texture, glm::vec2 po
 
     glBindVertexArray(this->quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    //glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void SpriteRenderer::initRenderData()

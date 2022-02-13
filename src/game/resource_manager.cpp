@@ -12,8 +12,8 @@
 #include <sstream>
 #include <fstream>
 
-//#include <SOIL/SOIL.h>
-#include <stb/stb_image.h>
+#include <SOIL/SOIL.h>
+//#include <stb/stb_image.h>
 // Instantiate static variables
 std::map<std::string, std::shared_ptr<Texture2D>>    ResourceManager::Textures;
 std::map<std::string, std::shared_ptr<Shader>>       ResourceManager::Shaders;
@@ -113,32 +113,32 @@ void ResourceManager::loadTextureFromFile(std::shared_ptr<Texture2D> texture, co
         texture->Image_Format = GL_RGBA;
     }
     // Load image
-    //int width, height;
+    int width, height;
 
-    int width, height, nrComponents;
+//    int width, height, nrComponents;
+//
+//    GLenum format;
+//    unsigned char *image = stbi_load(file, &width, &height, &nrComponents, 0);
+//    if (image) {
+//        //GLenum format;
+//        if (nrComponents == 1)
+//            format = GL_RED;
+//        else if (nrComponents == 3)
+//            format = GL_RGB;
+//        else if (nrComponents == 4)
+//            format = GL_RGBA;
+//    }
+//
+//    texture->Internal_Format = format;
+//    texture->Image_Format = format;
 
-    GLenum format;
-    unsigned char *image = stbi_load(file, &width, &height, &nrComponents, 0);
-    if (image) {
-        //GLenum format;
-        if (nrComponents == 1)
-            format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
-        else if (nrComponents == 4)
-            format = GL_RGBA;
-    }
-
-    texture->Internal_Format = format;
-    texture->Image_Format = format;
-
-    //unsigned char* image = SOIL_load_image(file, &width, &height, 0, texture.Image_Format == GL_RGBA ? SOIL_LOAD_RGBA : SOIL_LOAD_RGB);
+    unsigned char* image = SOIL_load_image(file, &width, &height, 0, texture->Image_Format == GL_RGBA ? SOIL_LOAD_RGBA : SOIL_LOAD_RGB);
     // Now generate texture
     //glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     texture->Generate(width, height, image);
     // And finally free image data
-    //SOIL_free_image_data(image);
-    stbi_image_free(image);
+    SOIL_free_image_data(image);
+//    stbi_image_free(image);
     //return texture;
 }
 
