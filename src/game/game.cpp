@@ -147,11 +147,6 @@ void Game::ProcessInput(GLfloat dt)
 
 void Game::Render()
 {
-//    Renderer->DrawSprite(ResourceManager::GetTexture("face"),
-//                         glm::vec2(200, 200),
-//                         glm::vec2(300, 400),
-//                         45.0f,
-//                         glm::vec3(0.0f, 1.0f, 0.0f));
     if(this->State == GAME_ACTIVE)
     {
         Effects->BeginRender();
