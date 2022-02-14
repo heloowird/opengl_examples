@@ -9,6 +9,7 @@
 #include "ball_object.h"
 #include "particle_generator.h"
 #include "post_processor.h"
+#include "powerup_object.h"
 
 // Represents the current state of the game
 enum GameState {
@@ -49,6 +50,7 @@ public:
     GLuint                 Width, Height;
     std::vector<GameLevel> Levels;
     GLuint                 Level;
+    std::vector<PowerUp>  PowerUps;
     // Constructor/Destructor
     Game(GLuint width, GLuint height);
     ~Game();
@@ -61,6 +63,8 @@ public:
     void DoCollisions();
     void ResetLevel();
     void ResetPlayer();
+    void SpawnPowerUps(GameObject &block);
+    void UpdatePowerUps(GLfloat dt);
 };
 
 #endif //GAME_H

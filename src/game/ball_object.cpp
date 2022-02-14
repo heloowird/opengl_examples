@@ -9,7 +9,7 @@
 #include "game/ball_object.h"
 
 BallObject::BallObject()
-        : GameObject(), Radius(12.5f), Stuck(true)  { }
+        : GameObject(), Radius(12.5f), Stuck(true), Sticky(GL_FALSE), PassThrough(GL_FALSE)  { }
 
 BallObject::BallObject(glm::vec2 pos, GLfloat radius, glm::vec2 velocity, std::shared_ptr<Texture2D> sprite)
         :  GameObject(pos, glm::vec2(radius * 2, radius * 2), sprite, glm::vec3(1.0f), velocity), Radius(radius), Stuck(true) { }
@@ -47,4 +47,6 @@ void BallObject::Reset(glm::vec2 position, glm::vec2 velocity)
     this->Position = position;
     this->Velocity = velocity;
     this->Stuck = true;
+    this->Sticky = GL_FALSE;
+    this->PassThrough = GL_FALSE;
 }
