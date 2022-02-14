@@ -14,7 +14,8 @@ std::shared_ptr<SpriteRenderer>  Renderer;
 std::shared_ptr<GameObject> Player;
 std::shared_ptr<BallObject> Ball;
 std::shared_ptr<ParticleGenerator> Particles;
-
+std::shared_ptr<PostProcessor> Effects;
+GLfloat ShakeTime = 0.0f;
 
 Game::Game(GLuint width, GLuint height)
         : State(GAME_ACTIVE), Keys(), Width(width), Height(height)
@@ -32,6 +33,7 @@ void Game::Init()
     // 加载着色器
     ResourceManager::LoadShader("resources/shaders/sprite.vs", "resources/shaders/sprite.fs", nullptr, "sprite");
     ResourceManager::LoadShader("resources/shaders/particle.vs", "resources/shaders/particle.fs", nullptr, "particle");
+    ResourceManager::LoadShader("resources/shaders/post_processing.vs", "resources/shaders/post_processing.fs", nullptr, "postprocessing");
 
     // 配置着色器
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(this->Width),
@@ -55,6 +57,7 @@ void Game::Init()
             ResourceManager::GetTexture("particle"),
             500
     );
+    Effects = std::make_shared<PostProcessor>(ResourceManager::GetShader("postprocessing"), this->Width, this->Height);
 
     GameLevel one; one.Load("resources/levels/one.lvl", this->Width, this->Height * 0.5);
     GameLevel two; two.Load("resources/levels/two.lvl", this->Width, this->Height * 0.5);
@@ -93,6 +96,12 @@ void Game::Update(GLfloat dt)
     {
         this->ResetLevel();
         this->ResetPlayer();
+    }
+    if (ShakeTime > 0.0f)
+    {
+        ShakeTime -= dt;
+        if (ShakeTime <= 0.0f)
+            Effects->Shake = false;
     }
 }
 
@@ -135,6 +144,8 @@ void Game::Render()
 //                         glm::vec3(0.0f, 1.0f, 0.0f));
     if(this->State == GAME_ACTIVE)
     {
+        Effects->BeginRender();
+
         // 绘制背景
         Renderer->DrawSprite(ResourceManager::GetTexture("background"),
                              glm::vec2(0, 0), glm::vec2(this->Width, this->Height), 0.0f
@@ -150,6 +161,9 @@ void Game::Render()
 
         // 绘制小球
         Ball->Draw(Renderer);
+
+        Effects->EndRender();
+        Effects->Render(glfwGetTime());
     }
 }
 
@@ -223,6 +237,11 @@ void Game::DoCollisions()
                 // Destroy block if not solid
                 if (!box.IsSolid)
                     box.Destroyed = GL_TRUE;
+                else
+                {   // 如果是实心的砖块则激活shake特效
+                    ShakeTime = 0.05f;
+                    Effects->Shake = true;
+                }
                 // Collision resolution
                 Direction dir = std::get<1>(collision);
                 glm::vec2 diff_vector = std::get<2>(collision);

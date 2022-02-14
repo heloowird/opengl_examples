@@ -8,6 +8,7 @@
 #include "game_object.h"
 #include "ball_object.h"
 #include "particle_generator.h"
+#include "post_processor.h"
 
 // Represents the current state of the game
 enum GameState {
