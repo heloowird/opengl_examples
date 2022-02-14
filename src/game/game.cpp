@@ -122,7 +122,7 @@ void Game::ProcessInput(GLfloat dt)
     {
         GLfloat velocity = PLAYER_VELOCITY * dt;
         // 移动玩家挡板
-        if (this->Keys[GLFW_KEY_A])
+        if (this->Keys[GLFW_KEY_A] || this->Keys[GLFW_KEY_LEFT])
         {
             if (Player->Position.x >= 0)
             {
@@ -131,7 +131,7 @@ void Game::ProcessInput(GLfloat dt)
                     Ball->Position.x -= velocity;
             }
         }
-        if (this->Keys[GLFW_KEY_D])
+        if (this->Keys[GLFW_KEY_D] || this->Keys[GLFW_KEY_RIGHT])
         {
             if (Player->Position.x <= this->Width - Player->Size.x)
             {
