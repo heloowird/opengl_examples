@@ -5,6 +5,12 @@
 * local env: macOS11.3 + Clion 
 
 ## Usage
-0. clone the repo: `git clone  --recurse-submodules https://github.com/heloowird/opengl_examples.git`
-1. build the project: `sh build.sh`
-2. run the executable file: `cd build/bin && ./opengl_example`
+0. clone the repo: 
+
+   `git clone  --recurse-submodules https://github.com/heloowird/opengl_examples.git`
+1. build the project: 
+
+   `sh build.sh`
+2. run the executable file: 
+
+   `cd build/bin && ./opengl_example`
